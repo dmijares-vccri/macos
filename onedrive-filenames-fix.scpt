@@ -1,6 +1,3 @@
-Apologies for the confusion. In the previous script, the `givenPath` variable was hardcoded for demonstration purposes. To provide the folder path dynamically, you can modify the script to prompt the user for the folder path using the `choose folder` dialog. Here's the updated script:
-
-```applescript
 -- Function to check if a string contains any illegal characters
 on containsIllegalCharacters(theString)
     set illegalCharacters to "[\\/:*?\"<>|]" -- List of illegal characters
