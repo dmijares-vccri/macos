@@ -1,3 +1,6 @@
+Apologies for the confusion. In the previous script, the `givenPath` variable was hardcoded for demonstration purposes. To provide the folder path dynamically, you can modify the script to prompt the user for the folder path using the `choose folder` dialog. Here's the updated script:
+
+```applescript
 -- Function to check if a string contains any illegal characters
 on containsIllegalCharacters(theString)
     set illegalCharacters to "[\\/:*?\"<>|]" -- List of illegal characters
@@ -68,9 +71,11 @@ on checkAndCorrectNames(baseFolder, reportList)
 end checkAndCorrectNames
 
 -- Main script
-on run argv
-    set givenPath to item 1 of argv
+set chosenFolder to choose folder with prompt "Select a folder to check and correct names"
+
+if chosenFolder is not equal to false then
     set reportList to {}
+    set givenPath to POSIX path of chosenFolder
     
     tell application "Finder"
         -- Check if the given path is a valid folder
@@ -89,18 +94,4 @@ on run argv
             
             -- Display the report
             display dialog reportText with icon note buttons {"Cancel", "Rename"} default button "Rename"
-            if button returned of result is "Rename" then
-                -- Rename the files and folders
-                repeat with itemData in reportList
-                    set oldName to oldName of itemData
-                    set newName to newName of itemData
-                    set targetItem to item oldName of baseFolder
-                    set name of targetItem to newName
-                end repeat
-                display dialog "Renaming completed." with icon note buttons {"OK"} default button "OK"
-            end if
-        else
-            display dialog "Invalid folder path."
-        end if
-    end tell
-end run
+            if button returned of result is
