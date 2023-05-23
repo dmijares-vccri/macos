@@ -21,7 +21,7 @@ trimString() {
     echo "$trimmedString"
 }
 
-# Function to check and correct file or folder names
+# Function to check and correct file names
 checkAndCorrectNames() {
     local baseFolder="$1"
     local reportFile="$2"
@@ -31,19 +31,13 @@ checkAndCorrectNames() {
         itemName=$(basename "$theItem")
         newPath=$(dirname "$theItem")/$(trimString "$itemName")
         
-        # Check if the item has illegal characters or overlong path name
-        if containsIllegalCharacters "$itemName" || [[ ${#newPath} -gt 255 ]]; then
+        # Check if the item is a file and has illegal characters or overlong path name
+        if [[ -f "$theItem" && ( $(containsIllegalCharacters "$itemName") == 0 || ${#newPath} -gt 255 ) ]]; then
             # Write the item to the report file
             printf "Old: %s\n" "$itemName" >> "$reportFile"
             printf "New: %s\n\n" "$newPath" >> "$reportFile"
         fi
-        
-        # Check if the item is a folder
-        if [[ -d "$theItem" ]]; then
-            # Recursively check and correct names in subfolders
-            checkAndCorrectNames "$theItem" "$reportFile"
-        fi
-    done < <(find "$baseFolder" -mindepth 1 -print0)
+    done < <(find "$baseFolder" -type f -print0)
 }
 
 # Main script
@@ -62,9 +56,9 @@ if [[ -d "$givenPath" ]]; then
         cat "$reportFile"
         printf "\n"
         
-        read -rp "Do you want to rename the files and folders? (y/n): " choice
+        read -rp "Do you want to rename the files? (y/n): " choice
         if [[ $choice == [Yy] ]]; then
-            # Rename the files and folders
+            # Rename the files
             while IFS= read -r -d '' theItem; do
                 itemName=$(basename "$theItem")
                 newPath=$(dirname "$theItem")/$(trimString "$itemName")
