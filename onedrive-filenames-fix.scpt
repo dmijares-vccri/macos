@@ -91,4 +91,18 @@ if chosenFolder is not equal to false then
             
             -- Display the report
             display dialog reportText with icon note buttons {"Cancel", "Rename"} default button "Rename"
-            if button returned of result is
+            if button returned of result is "Rename" then
+                -- Rename the files and folders
+                repeat with itemData in reportList
+                    set oldName to oldName of itemData
+                    set newName to newName of itemData
+                    set targetItem to item oldName of baseFolder
+                    set name of targetItem to newName
+                end repeat
+                display dialog "Renaming completed." with icon note buttons {"OK"} default button "OK"
+            end if
+        else
+            display dialog "Invalid folder path."
+        end if
+    end tell
+end if
